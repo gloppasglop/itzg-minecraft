@@ -1,26 +1,23 @@
-FROM itzg/ubuntu-openjdk-7
+FROM alpine:3.3
 
-MAINTAINER itzg
+MAINTAINER gloppasglop
 
-ENV APT_GET_UPDATE 2015-10-03
-RUN apt-get update
+RUN  apk --update add openjdk8-jre bash wget jq
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y libmozjs-24-bin imagemagick lsof && apt-get clean
-RUN update-alternatives --install /usr/bin/js js /usr/bin/js24 100
-
-RUN wget -O /usr/bin/jsawk https://github.com/micha/jsawk/raw/master/jsawk
-RUN chmod +x /usr/bin/jsawk
-RUN useradd -M -s /bin/false --uid 1000 minecraft \
+RUN adduser -D -s /bin/false -u 1000 mc \
   && mkdir /data \
   && mkdir /config \
   && mkdir /mods \
   && mkdir /plugins \
-  && chown minecraft:minecraft /data /config /mods /plugins
+  && chown mc:mc /data /config /mods /plugins
 
 EXPOSE 25565
 
-COPY start.sh /start
 COPY start-minecraft.sh /start-minecraft
+
+RUN chown mc:mc /start-minecraft
+
+USER mc
 
 VOLUME ["/data"]
 VOLUME ["/mods"]
@@ -29,7 +26,7 @@ VOLUME ["/plugins"]
 COPY server.properties /tmp/server.properties
 WORKDIR /data
 
-CMD [ "/start" ]
+CMD [ "/start-minecraft" ]
 
 # Special marker ENV used by MCCY management tool
 ENV MC_IMAGE=YES

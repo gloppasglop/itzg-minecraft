@@ -20,16 +20,16 @@ fi
 echo "Checking version information."
 case "X$VERSION" in
   X|XLATEST|Xlatest)
-    VANILLA_VERSION=`wget -O - https://s3.amazonaws.com/Minecraft.Download/versions/versions.json | jsawk -n 'out(this.latest.release)'`
+    VANILLA_VERSION=`wget -O - https://s3.amazonaws.com/Minecraft.Download/versions/versions.json | jq  -r '.latest.release'`
   ;;
   XSNAPSHOT|Xsnapshot)
-    VANILLA_VERSION=`wget -O - https://s3.amazonaws.com/Minecraft.Download/versions/versions.json | jsawk -n 'out(this.latest.snapshot)'`
+    VANILLA_VERSION=`wget -O - https://s3.amazonaws.com/Minecraft.Download/versions/versions.json | jq -r '.latest.snapshot'`
   ;;
   X[1-9]*)
     VANILLA_VERSION=$VERSION
   ;;
   *)
-    VANILLA_VERSION=`wget -O - https://s3.amazonaws.com/Minecraft.Download/versions/versions.json | jsawk -n 'out(this.latest.release)'`
+    VANILLA_VERSION=`wget -O - https://s3.amazonaws.com/Minecraft.Download/versions/versions.json | jq -r '.latest.release'`
   ;;
 esac
 
@@ -68,7 +68,7 @@ case "$TYPE" in
     echo "Checking Forge version information."
     case $FORGEVERSION in
         RECOMMENDED)
-  		FORGE_VERSION=`wget -O - http://files.minecraftforge.net/maven/net/minecraftforge/forge/promotions_slim.json | jsawk -n "out(this.promos['$norm-recommended'])"`
+  		FORGE_VERSION=`wget -O - http://files.minecraftforge.net/maven/net/minecraftforge/forge/promotions_slim.json | jq -r ".promos | .[\"$norm-recommended\"]"`
         ;;
 
         *)
@@ -77,7 +77,7 @@ case "$TYPE" in
     esac
 
     # URL format changed for 1.7.10 from 10.13.2.1300
-    sorted=$((echo $FORGE_VERSION; echo 10.13.2.1300) | sort -V | head -1)
+    sorted=$((echo $FORGE_VERSION; echo 10.13.2.1300) |  sort -t. -k 1,1n -k 2,2n -k 3,3n -k 4,4n | head -1)
     if [[ $norm == '1.7.10' && $sorted == '10.13.2.1300' ]]; then
         # if $FORGEVERSION >= 10.13.2.1300
         normForgeVersion="$norm-$FORGE_VERSION-$norm"

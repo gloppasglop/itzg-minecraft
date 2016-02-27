@@ -1,5 +1,10 @@
 
-Minecraft Server Docker (taken from https://github.com/itzg/dockerfiles)
+Minecraft Server Docker
+
+Modified from https://github.com/itzg/dockerfiles
+Use alpine linux
+
+
 
 This docker image provides a Minecraft Server that will automatically download the latest stable
 version at startup. You can also run/upgrade to any specific version or the
