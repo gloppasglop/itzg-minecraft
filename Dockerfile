@@ -14,6 +14,10 @@ RUN adduser -D -s /bin/false -u 1001 mc \
 EXPOSE 25565
 
 COPY mc.sh /mc.sh
+ADD https://github.com/itzg/restify/releases/download/1.0.3/restify_linux_amd64 /restify
+COPY mcadmin.jq /mcadmin.jq
+RUN chmod +x /restify && chown mc:mc /restify
+
 
 RUN chown mc:mc /mc.sh
 
