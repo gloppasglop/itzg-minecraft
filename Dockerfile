@@ -4,7 +4,7 @@ MAINTAINER gloppasglop
 
 RUN  apk --update add openjdk8-jre bash wget jq
 
-RUN adduser -D -s /bin/false -u 1000 mc \
+RUN adduser -D -s /bin/false -u 1001 mc \
   && mkdir /data \
   && mkdir /config \
   && mkdir /mods \
@@ -13,9 +13,9 @@ RUN adduser -D -s /bin/false -u 1000 mc \
 
 EXPOSE 25565
 
-COPY start-minecraft.sh /start-minecraft
+COPY mc.sh /mc.sh
 
-RUN chown mc:mc /start-minecraft
+RUN chown mc:mc /mc.sh
 
 USER mc
 
@@ -26,13 +26,14 @@ VOLUME ["/plugins"]
 COPY server.properties /tmp/server.properties
 WORKDIR /data
 
-CMD [ "/start-minecraft" ]
 
 # Special marker ENV used by MCCY management tool
 ENV MC_IMAGE=YES
 
-ENV UID=1000 GID=1000
+ENV UID=1001 GID=1001
 ENV MOTD A Minecraft Server Powered by Docker
 ENV JVM_OPTS -Xmx1024M -Xms1024M
 ENV TYPE=VANILLA VERSION=LATEST FORGEVERSION=RECOMMENDED LEVEL=world PVP=true DIFFICULTY=easy \
   LEVEL_TYPE=DEFAULT GENERATOR_SETTINGS= WORLD= MODPACK=
+ENTRYPOINT ["/mc.sh"]
+CMD ["start"]

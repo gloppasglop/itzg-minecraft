@@ -33,6 +33,7 @@ case "X$VERSION" in
   ;;
 esac
 
+
 cd /data
 
 echo "Checking type information."
@@ -314,12 +315,14 @@ if [ "$TYPE" = "SPIGOT" ]; then
   fi
 fi
 
-# If we have a bootstrap.txt file... feed that in to the server stdin
-if [ -f /data/bootstrap.txt ];
-then
-    exec java $JVM_OPTS -jar $SERVER < /data/bootstrap.txt
-else
-    exec java $JVM_OPTS -jar $SERVER
-fi
+## If we have a bootstrap.txt file... feed that in to the server stdin
+#if [ -f /data/bootstrap.txt ];
+#then
+#    exec java $JVM_OPTS -jar $SERVER < /data/bootstrap.txt
+#else
+#    exec java $JVM_OPTS -jar $SERVER
+#fi
 
-exec java $JVM_OPTS -jar $SERVER
+mkfifo /tmp/mc-console
+
+tail -f /tmp/mc-console | exec java $JVM_OPTS -jar $SERVER
